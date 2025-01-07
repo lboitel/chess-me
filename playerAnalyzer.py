@@ -78,7 +78,7 @@ class PlayerAnalyzer:
 
         return {
             "trades": chessAnalyzer.count_trades(),
-            "queen_lifetime": chessAnalyzer.queen_lifetime(),
+            # "queen_lifetime": chessAnalyzer.queen_lifetime(),
             "queen_moves": chessAnalyzer.queen_moves(),
             "piece_advancement": chessAnalyzer.piece_advancement(),
             "central_pawns": chessAnalyzer.central_pawns(),
