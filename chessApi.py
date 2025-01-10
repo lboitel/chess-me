@@ -37,9 +37,25 @@ def generate_analysis():
         "Hash": 512,  # 512 Mo pour le cache
         # "Use NNUE": True,  # Utilisation du réseau neuronal pour l'évaluation
     })
-    
+
     return jsonify(data)  # Retourne un JSON
 
+@app.route('/next_move', methods=['GET'])
+def calculate_next_move():
+    fen = request.args.get('fen')  # Position actuelle en notation FEN
+    if not fen:
+        return jsonify({"error": "No FEN position provided"}), 400
+
+    # Initialisation de l'échiquier
+    board = chess.Board(fen)
+    # Calcul du prochain coup
+    result = engine.play(board, chess.engine.Limit(time=1))
+    # Appliquer le coup sur l'échiquier
+    board.push(result.move)
+
+    # Retourner la position FEN après le coup de l'IA
+    return jsonify({"fen": board.fen()})
+  # Renvoie le coup en format UCI
 
 # Lancer l'application Flask
 if __name__ == '__main__':
