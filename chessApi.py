@@ -33,10 +33,12 @@ def generate_analysis():
     headers = {"User-Agent": "MyChessApp"}
 
     elo = rq.get(url=f"https://api.chess.com/pub/player/{player_name}/stats", headers= headers).json()['chess_rapid']["last"]["rating"]
+    data['elo'] = elo
+    
     if int(elo) < 1320:
         elo = 1320
 
-    data['elo'] = elo
+    
 
     engine.configure({
         "Skill Level": 10,  # Niveau de force
