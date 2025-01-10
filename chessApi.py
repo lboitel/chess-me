@@ -2,6 +2,7 @@ import flask
 from flask import request, jsonify, Flask
 import playerAnalyzer as pa
 from flask_cors import CORS
+import requests as rq 
 
 app = Flask(__name__)
 CORS(app)  # Autorise les requêtes cross-origin
@@ -29,10 +30,18 @@ def generate_analysis():
     data = analyzer.analyzed_games.mean(numeric_only=True).to_dict()
     data['number_games'] = analyzer.analyzed_games.shape[0]
 
+    headers = {"User-Agent": "MyChessApp"}
+
+    elo = rq.get(url=f"https://api.chess.com/pub/player/{player_name}/stats", headers= headers).json()['chess_rapid']["last"]["rating"]
+    if int(elo) < 1320:
+        elo = 1320
+
+    data['elo'] = elo
+
     engine.configure({
         "Skill Level": 10,  # Niveau de force
         "UCI_LimitStrength": True,  # Limitation de l'ELO
-        "UCI_Elo": 1330,  # ELO cible
+        "UCI_Elo": int(elo),  # ELO cible
         # "UCI_Contempt": 10,  # Privilégier les parties agressives (éviter les nulles)
         "Hash": 512,  # 512 Mo pour le cache
         # "Use NNUE": True,  # Utilisation du réseau neuronal pour l'évaluation
