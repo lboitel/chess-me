@@ -6,6 +6,7 @@ import requests as rq
 
 app = Flask(__name__)
 CORS(app)  # Autorise les requêtes cross-origin
+CORS(app, resources={r"/*": {"origins": "https://noisette.bio"}})
 
 import chess
 import chess.engine
